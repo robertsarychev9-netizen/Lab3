@@ -4,12 +4,13 @@
 #include <stdlib.h>
 
 HouseCont_t InitCont() {
-    HouseCont_t res;
-    res.HouseCount = 0;
-    res.FirstContElem = NULL;
-    res.LastContElem = NULL;
+    HouseCont_t *res;
+    res = (HouseCont_t*)malloc(sizeof(HouseCont_t));
+    (*res).HouseCount = 0;
+    (*res).FirstContElem = NULL;
+    (*res).LastContElem = NULL;
 
-    return res;
+    return (*res);
 
 }
 
@@ -33,50 +34,64 @@ HouseContElem_t *GetPrevHouseElem(HouseContElem_t housecontelem) {
     return housecontelem.prevHouse;
 };
 
-void AddHouseContElem(HouseCont_t housecont, unsigned int index, House_t *house) {
-    HouseContElem_t housecontelem;
-    housecontelem.house = house;
-    housecontelem.prevHouse = NULL;
-    housecontelem.nextHouse = NULL;
+void AddHouseContElem(HouseCont_t *housecont, unsigned int index, House_t *house) {
+    HouseContElem_t *housecontelem;
+    housecontelem = (HouseContElem_t*)malloc(sizeof(HouseContElem_t));
+    (*housecontelem).house = house;
+    (*housecontelem).prevHouse = NULL;
+    (*housecontelem).nextHouse = NULL;
 
-    if (index > housecont.HouseCount + 1) {
+    if (index > (*housecont).HouseCount) {
         perror("Невозможно добавить в контейнер, индекс превышает размер контейнера");
     }
 
-    housecont.HouseCount++;
 
-    if (housecont.HouseCount == 0) {
-        housecont.FirstContElem = &housecontelem;
+    if ((*housecont).HouseCount == 0) {
+        (*housecont).FirstContElem = housecontelem;
+        (*housecont).LastContElem = housecontelem;
+        (*housecont).HouseCount+=1;
         return;
     }
 
-    if (index = housecont.HouseCount) {
-        housecontelem.prevHouse = housecont.LastContElem;
-        (*(housecontelem.prevHouse)).nextHouse = &housecontelem;
-        housecont.LastContElem = &housecontelem;
+    if (index = (*housecont).HouseCount) {
+        (*housecontelem).prevHouse = (*housecont).LastContElem;
+        (*((*housecontelem).prevHouse)).nextHouse = housecontelem;
+        (*housecont).LastContElem = housecontelem;
+        (*housecont).HouseCount+=1;
         return;
     }
 
-    housecont.HouseCount += 1;
-    HouseContElem_t *list = housecont.FirstContElem;
+    HouseContElem_t *list = (*housecont).FirstContElem;
     for (int i = 0; i < index; i++) {
         list = (*list).nextHouse;
     }
 
     if ((*list).prevHouse != NULL) {
-        (*list).nextHouse = &housecontelem;
+        (*list).nextHouse = housecontelem;
     }
-    housecontelem.prevHouse = (*list).prevHouse;
-    housecontelem.nextHouse = list;
-
+    (*housecontelem).prevHouse = (*list).prevHouse;
+    (*housecontelem).nextHouse = list;
+    (*housecont).HouseCount+=1;
 }
 
-void DelHouseContElem(HouseCont_t housecont, unsigned int index) {
-    if (index > housecont.HouseCount + 1){
-        perror("Невозможно удалить в контейнер, индекс превышает размер контейнера");
+void DelHouseContElem(HouseCont_t *housecontP, unsigned int index) {
+    HouseCont_t housecont = *housecontP;
+
+    if (index >= housecont.HouseCount) {
+        perror("Невозможно удалить из контейнера, индекс превышает размер контейнера");
     }
+
+    if (index == 0) {
+        if (housecont.HouseCount>0) {
+            housecont.FirstContElem = (*(housecont.FirstContElem)).nextHouse;
+        } else {
+            housecont.FirstContElem = NULL;
+        }
+    }
+
     housecont.HouseCount -= 1;
     HouseContElem_t *list = housecont.FirstContElem;
+    
     for (int i = 0; i < index; i++) {
         list = (*list).nextHouse;
     }
@@ -94,7 +109,9 @@ void DelHouseContElem(HouseCont_t housecont, unsigned int index) {
 
 }
 
-void SwapContElem(HouseCont_t housecont, unsigned int findex, unsigned int sindex) {
+void SwapContElem(HouseCont_t *housecontP, unsigned int findex, unsigned int sindex) {
+    HouseCont_t housecont = *housecontP;
+
     if ((findex > housecont.HouseCount + 1) || (sindex > housecont.HouseCount + 1)){
         perror("Невозможно переместить, индекс превышает размер контейнера");
     }
@@ -154,7 +171,7 @@ HouseCont_t MakeCont(House_t *list) {
     unsigned int len = sizeof(*list)/sizeof(House_t); 
     while (i < len){
         House_t conthouse = NewHouse((list[i]).BuilderName, (list[i]).RegionName, (list[i]).HouseType, (list[i]).HouseBuildYear, (list[i]).HasElevator, (list[i]).HasTrash, (list[i]).FlatCount, (list[i]).FloorCount, (list[i]).AvgSquare);
-        AddHouseContElem(Cont, i, &conthouse);
+        AddHouseContElem(&Cont, i, &conthouse);
         i += 1;
     }
     Cont.HouseCount = len;

@@ -10,7 +10,8 @@ House_t NewHouse (const char *BuilderName, const char *RegionName, HouseType_t H
         perror("Некорректный год постройки");
     }
 
-    House_t res;
+    House_t *resP=(House_t*)malloc(sizeof(House_t)), res;
+    res = *resP;
 
     res.BuilderName = malloc(sizeof(char)*(strlen(BuilderName)+1));
     strcpy(res.BuilderName, BuilderName);
