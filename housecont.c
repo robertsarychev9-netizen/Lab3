@@ -35,12 +35,24 @@ HouseContElem_t *GetPrevHouseElem(HouseContElem_t housecontelem) {
     return housecontelem.prevHouse;
 };
 
+unsigned int GetElemIndex(HouseCont_t *housecont, HouseContElem_t *housecontelem) {
+    HouseContElem_t *list = housecontelem;
+    unsigned int index = 0;
+    while ((*list).prevHouse != NULL) {
+        list = (*list).prevHouse;
+        index+=1;
+    }
+    return index;
+
+}
+
 void AddHouseContElem(HouseCont_t *housecont, unsigned int index, House_t *house) {
     HouseContElem_t *housecontelem;
     housecontelem = (HouseContElem_t*)malloc(sizeof(HouseContElem_t));
     (*housecontelem).house = house;
     (*housecontelem).prevHouse = NULL;
     (*housecontelem).nextHouse = NULL;
+
 
     if (index > (*housecont).HouseCount) {
         perror("Невозможно добавить в контейнер, индекс превышает размер контейнера");
@@ -73,6 +85,7 @@ void AddHouseContElem(HouseCont_t *housecont, unsigned int index, House_t *house
     }
     (*housecontelem).prevHouse = (*list).prevHouse;
     (*housecontelem).nextHouse = list;
+    (*list).prevHouse = housecontelem;
     (*housecont).HouseCount+=1;
 }
 
@@ -112,6 +125,89 @@ void DelHouseContElem(HouseCont_t *housecontP, unsigned int index) {
 
 }
 
+void SwapContElemR(HouseCont_t *housecontP, unsigned int findex, unsigned int sindex) {
+    if ((findex > (*housecontP).HouseCount - 1) || (sindex > (*housecontP).HouseCount - 1)){
+        errno = -1;
+        perror("Невозможно переместить, индекс превышает размер контейнера");
+        exit(EXIT_FAILURE);
+    }
+
+    if (findex == sindex) {
+        perror("Невозможно переместить, индексы совпадают");
+        exit(EXIT_FAILURE);
+    }
+
+    if (findex > sindex) {
+        int t = findex;
+        findex = sindex;
+        sindex = t;
+    }
+ 
+    HouseContElem_t *first = (*housecontP).FirstContElem, *second = (*housecontP).FirstContElem;
+
+    for (int i = 0; i < findex; i++) {
+        first = (*first).nextHouse;
+    }
+
+    for (int i = 0; i < sindex; i++) {
+        second = (*second).nextHouse;
+    }
+
+    HouseContElem_t **a1 = NULL, *a2, *a3, **a4 = NULL, **a5 = NULL, *a6, *a7, **a8 = NULL;
+    
+    if (first->prevHouse != NULL) {
+        a1 = &(first->prevHouse->nextHouse);
+    }
+    a2 = first->prevHouse;
+    a3 = first->nextHouse;
+    if (first->nextHouse != NULL) {
+        a4 = &(first->nextHouse->prevHouse);
+    }
+    if (second->prevHouse != NULL) {
+        a5 = &(second->prevHouse->nextHouse);
+    }
+    a6 = second->prevHouse;
+    a7 = second->nextHouse;
+    if (second->nextHouse != NULL) {
+        a8 = &(second->nextHouse->prevHouse);
+    }
+
+    if (a1 != NULL) {
+        (*a1) = second;
+    }
+    if ((a4 != NULL) && (sindex-findex>1)) {
+        (*a4) = second;
+    }
+    if ((a5 != NULL) && (sindex-findex>1)) {
+        (*a5) = first;
+    }
+    if (a8 != NULL) {
+        (*a8) = first;
+    }
+    if (sindex-findex>1) {
+        first->prevHouse = a6;
+        second->nextHouse = a3;
+    } else {
+        first->prevHouse = second;
+        second->nextHouse = first;
+    }
+    first->nextHouse = a7;
+    second->prevHouse = a2;
+
+    if (findex == 0) {
+        housecontP->FirstContElem = second;
+    }
+    if (findex == housecontP->HouseCount-1) {
+        housecontP->LastContElem = second;
+    }
+    if (sindex == 0) {
+        housecontP->FirstContElem = first;
+    }
+    if (sindex == housecontP->HouseCount-1) {
+        housecontP->LastContElem = first;
+    }    
+}
+
 void SwapContElem(HouseCont_t *housecontP, unsigned int findex, unsigned int sindex) {
 
     if ((findex > (*housecontP).HouseCount - 1) || (sindex > (*housecontP).HouseCount - 1)){
@@ -137,68 +233,13 @@ void SwapContElem(HouseCont_t *housecontP, unsigned int findex, unsigned int sin
 
 
     House_t *fhouse = (House_t*)malloc(sizeof(House_t)), *shouse = (House_t*)malloc(sizeof(House_t));
-    fhouse = (*first).house;
-    shouse = (*second).house;
+    *fhouse = (*(*first).house);
+    *shouse = (*(*second).house);
+
     AddHouseContElem(housecontP, sindex+1, fhouse);
-     //   printf("%s","\n");
-     //   printcont(housecontP);
-      //  printf("%s","\n");
     DelHouseContElem(housecontP,sindex);
-     //   printcont(housecontP);
-     //   printf("%s","\n");
     AddHouseContElem(housecontP, findex+1, shouse);
-     //   printcont(housecontP);
-     //   printf("%s","\n");
     DelHouseContElem(housecontP,findex);
-     //   printcont(housecontP);
-     //   printf("%s","\n");
-/*
-    HouseContElem_t *fp = (*first).prevHouse, *fn = (*first).nextHouse, *sp = (*second).prevHouse, *sn = (*second).nextHouse;
-    HouseContElem_t *fpf, *fnf, *spf, *snf;
-
-    if (fp != NULL) {
-        fpf = second;
-    }
-    (*second).prevHouse = fp;
-
-    if (sp != NULL) {
-        spf = first;
-    }
-    (*first).prevHouse = sp;
-
-    if (fn !=NULL) {
-        fnf = second;
-    }    
-    (*second).nextHouse = fn;
-
-    if (sn != NULL) {
-        snf = first;
-    }
-    (*first).nextHouse = sn;
-
-    if (fp != NULL) {
-        (*fp).nextHouse = fpf;
-    }
-    if (fn != NULL) {
-        (*fn).prevHouse = fnf;
-    }
-    if (sp != NULL) {
-        (*sp).nextHouse = spf;
-    }
-    if (sn != NULL) {
-        (*sn).prevHouse = snf;
-    }
-    if (findex == 0) {
-        (*housecontP).FirstContElem = second;
-        (*second).prevHouse = NULL;
-    }
-
-    if (sindex == (*housecontP).HouseCount - 1) {
-        (*housecontP).LastContElem = first;
-        (*first).nextHouse = NULL;
-    }
-    */
-        
 }
 
 House_t *MakeList(HouseCont_t housecont) {

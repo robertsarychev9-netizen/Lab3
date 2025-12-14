@@ -6,6 +6,7 @@
 #include "house.h"
 #include "housecont.h"
 char* manual_realloc(char* old_ptr, size_t old_size, size_t new_size);
+char **manual_realloc_two(char** old_ptr, size_t old_size, size_t new_size);
 int strintcheck(char *str, int mode);
 int csvcheck(char *str);
 char *randbuilder(int N);

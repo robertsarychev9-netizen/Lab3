@@ -20,6 +20,8 @@ HouseContElem_t *GetPrevHouseElem(HouseContElem_t housecont);
 void AddHouseContElem(HouseCont_t *housecont, unsigned int index, House_t *house);
 void DelHouseContElem(HouseCont_t *housecontP, unsigned int index);
 void SwapContElem(HouseCont_t *housecontP, unsigned int findex, unsigned int sindex);
+void SwapContElemR(HouseCont_t *housecontP, unsigned int findex, unsigned int sindex);
+unsigned int GetElemIndex(HouseCont_t *housecont, HouseContElem_t *housecontelem);
 void FreeContElem(HouseContElem_t *housecontelem);
 House_t *MakeList(HouseCont_t housecont);
 HouseCont_t MakeCont(House_t* list);

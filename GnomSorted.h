@@ -2,5 +2,7 @@
 #include "house.h"
 #include "housecont.h"
 
-HouseCont_t *GnomSortedCont(HouseCont_t *housecontP);
-int CompareCont(HouseContElem_t *fhousecontelem, HouseContElem_t *shousecontelem, unsigned int index);
+void GnomSortedCont(HouseCont_t *housecontP, int reverse);
+int CompareCont(HouseContElem_t *fhousecontelem, HouseContElem_t *shousecontelem, unsigned int index, int type);
+void QuickSortCont(HouseCont_t *housecont, unsigned int findex, unsigned int sindex, int reverse);
+int partiation(HouseCont_t *housecont,unsigned int findex, unsigned int sindex, int reverse);

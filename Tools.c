@@ -125,8 +125,8 @@ void generator(HouseCont_t *ContP, int N) {
         char *regionname = randregion(rand() % 10);
         HouseType_t housetype = (HouseType_t)((rand() % 3) );
         unsigned int year = (rand() % 9000) + 1000;
-        bool haselevator = (bool)(rand() % 1);
-        bool hastrash = (bool)(rand() % 1);
+        bool haselevator = (bool)(rand() % 2);
+        bool hastrash = (bool)(rand() % 2);
         unsigned int flatcount = rand() % 1000;
         unsigned int floorcount = rand() % 1000;
         float avgsquare = (rand() % 50000) / 100.0;
@@ -142,9 +142,49 @@ void printcont(HouseCont_t *Cont) {
 
     for (int i = 0; i < (*Cont).HouseCount; i++) {
         house = *((*list).house);
+        /*
         printf("%s,%s,%d,%d,%d,%d,%d,%d,%.2f\n",
                 house.BuilderName,house.RegionName,(int)(house.HouseType),house.HouseBuildYear,
                 (int)(house.HasElevator),(int)(house.HasTrash),house.FlatCount,house.FloorCount,house.AvgSquare);
+        */
+        printf("%-20s", house.BuilderName);
+        printf("%-12s", house.RegionName);
+        if ((int)(house.HouseType) == 0){
+            printf("%-10s", "PANEL");
+        }
+        if ((int)(house.HouseType) == 1){
+            printf("%-10s", "BRICK");
+        }
+        if ((int)(house.HouseType) == 2){
+            printf("%-10s", "MONOLIT");
+        }
+        printf("%-5d", house.HouseBuildYear);
+        if ((int)(house.HasElevator) == 1){
+            printf("%-5s", "YES");
+        } else {
+            printf("%-5s", "NO");
+        }
+        if ((int)(house.HasTrash) == 1){
+            printf("%-5s", "YES");
+        } else {
+            printf("%-5s", "NO");
+        }
+        printf("%-6d", house.FlatCount);
+        printf("%-6d", house.FloorCount);
+        printf("%-6f\n", house.AvgSquare);
+
+
+        /*
+        if (tp == 1) {
+            if ((*list).prevHouse !=NULL) {
+                printf("  P %s",list->prevHouse->house->BuilderName);
+            }
+            if ((*list).nextHouse !=NULL) {
+                printf("  N %s",list->nextHouse->house->BuilderName);
+            }
+            printf("\n");
+        }
+            */
         list = (*list).nextHouse;
     }    
 
@@ -228,4 +268,19 @@ House_t strtohouse(char *str){
     }
     return NewHouse(BuilderName, RegionName, HouseType, HouseBuildYear, HasElevator, HasTrash, FloorCount, FloorCount, AvgSquare);
 }
-
+char **manual_realloc_two(char** old_ptr, size_t old_size, size_t new_size) {
+    if (new_size<=old_size){
+        perror("Ошибка выделения памяти");
+        exit(EXIT_FAILURE);
+    }
+    char **new_ptr = (char**)malloc(new_size*sizeof(char*));
+    if (new_ptr == NULL) {
+        return NULL;
+    }
+    if (old_ptr != NULL) {
+        for (int i = 0; i < old_size; i++){
+            new_ptr[i]=old_ptr[i];
+        }
+    }
+    return new_ptr;
+}
