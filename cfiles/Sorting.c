@@ -1,6 +1,7 @@
-#include "GnomSorted.h"
+#include "..\headers\Sorting.h"
 #include <string.h>
-#include "Tools.h"
+#include "..\headers\Tools.h"
+
 
 int CompareCont(HouseContElem_t *fhousecontelem, HouseContElem_t *shousecontelem, unsigned int index, int type) {
     if ((fhousecontelem == NULL) || (shousecontelem == NULL)) {

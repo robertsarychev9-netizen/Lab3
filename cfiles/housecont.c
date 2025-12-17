@@ -1,8 +1,8 @@
-#include "housecont.h"
+#include "..\headers\housecont.h"
 #include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include "Tools.h"
+#include "..\headers\Tools.h"
 
 HouseCont_t InitCont() {
     HouseCont_t *res;

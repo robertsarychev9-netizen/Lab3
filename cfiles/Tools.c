@@ -2,8 +2,8 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#include "house.h"
-#include "housecont.h"
+#include "..\headers\house.h"
+#include "..\headers\housecont.h"
 
 char* manual_realloc(char* old_ptr, size_t old_size, size_t new_size) {
     if (new_size<=old_size){

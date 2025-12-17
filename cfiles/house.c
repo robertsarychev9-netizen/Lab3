@@ -1,5 +1,5 @@
 #include <stdbool.h>
-#include "house.h"
+#include "..\headers\house.h"
 #include <stdlib.h>
 #include <string.h>
 

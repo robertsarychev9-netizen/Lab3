@@ -2,10 +2,10 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#include "house.h"
-#include "housecont.h"
-#include "Tools.h"
-#include "GnomSorted.h"
+#include "..\headers\house.h"
+#include "..\headers\housecont.h"
+#include "..\headers\Tools.h"
+#include "..\headers\Sorting.h"
 
 typedef struct Flagtype {
     int generate;
@@ -265,7 +265,33 @@ int main(int argc, char *argv[]) {
             (*house) = strtohouse(list[k]);
             AddHouseContElem(&Cont, k, house);
         }
-        printcont(&Cont);
+        if (flag.out == 0){
+            //QuickSortCont(&Cont,0,GetHouseCount(Cont)-1,flag.reverse);
+            printcont(&Cont); printf("%s","\n");
+            /*
+            GnomSortedCont(&Cont, 1);
+            printcont(&Cont); printf("%s","\n");
+            */
+        } else {
+            int i = 0;
+            HouseContElem_t *list = Cont.FirstContElem;
+            while (i < Cont.HouseCount){
+                House_t *House = (*list).house;
+                fprintf(ofile, "%s,%s,%d,%u,%d,%d,%u,%u,%f\n",
+                House->BuilderName,
+                House->RegionName,
+                House->HouseType,
+                House->HouseBuildYear,
+                House->HasElevator,
+                House->HasTrash,
+                House->FlatCount,
+                House->FloorCount,
+                House->AvgSquare);
+                list = (*list).nextHouse;
+                i++;
+            }
+        }
+        //printcont(&Cont);
     }
     if (flag.in == 1){
         fclose(ifile);
