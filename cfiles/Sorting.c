@@ -2,8 +2,9 @@
 #include <string.h>
 #include "..\headers\Tools.h"
 
+typedef HouseContElem_t* pHouseContElem_t;
 
-int CompareCont(HouseContElem_t *fhousecontelem, HouseContElem_t *shousecontelem, unsigned int index, int type) {
+int CompareCont(pHouseContElem_t fhousecontelem, HouseContElem_t *shousecontelem, unsigned int index, int type) {
     if ((fhousecontelem == NULL) || (shousecontelem == NULL)) {
         return 0;
     }
